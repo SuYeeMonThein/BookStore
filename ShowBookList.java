@@ -7,7 +7,7 @@ public class ShowBookList {
     }
 
     private void fillBookStoreArray() {
-        books[0] = new BookStore("The Kite Runner", 2003, 16, "Khaled Hosseini");
+        books[0] = new BookStore("Phyo is gay", 2003, 16, "Khaled Hosseini");
         books[1] = new BookStore("The Pillars of the Earth", 1989, 15, "Ken Follett");
         books[2] = new BookStore("Cutting for stone", 2009, 20, "Abrahan Verghese");
         books[3] = new BookStore("The Shadow of the Wind", 2001, 20, "Carlos Ruiz Zafon");
@@ -29,18 +29,16 @@ public class ShowBookList {
         books[19] = new BookStore("Water for Elephants", 2006, 16, "Sara Gruen");
     }
 
-
-
-public void displayBookList() {
-    System.out.println("Book List  : ");
-    for (BookStore book : books) {
-        System.out.println(
-                book.getBookname() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor());
+    public void displayBookList() {
+        System.out.println("Book List  : ");
+        for (BookStore book : books) {
+            System.out.println(
+                    book.getBookname() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor());
+        }
     }
-}
 
-public static void main(String[] args) {
-    ShowBookList bookList = new ShowBookList();
-    bookList.displayBookList();
-}
+    public static void main(String[] args) {
+        ShowBookList bookList = new ShowBookList();
+        bookList.displayBookList();
+    }
 }
