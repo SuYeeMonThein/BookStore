@@ -29,16 +29,18 @@ public class ShowBookList {
         books[19] = new BookStore("Water for Elephants", 2006, 16, "Sara Gruen");
     }
 
-    public void displayBookList() {
-        System.out.println("Book List  : ");
-        for (BookStore book : books) {
-            System.out.println(
-                    book.getBookname() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor());
-        }
-    }
 
-    public static void main(String[] args) {
-        ShowBookList bookList = new ShowBookList();
-        bookList.displayBookList();
+
+public void displayBookList() {
+    System.out.println("Book List  : ");
+    for (BookStore book : books) {
+        System.out.println(
+                book.getBookname() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor());
     }
+}
+
+public static void main(String[] args) {
+    ShowBookList bookList = new ShowBookList();
+    bookList.displayBookList();
+}
 }
