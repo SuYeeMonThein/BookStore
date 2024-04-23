@@ -1,0 +1,3 @@
+Philosopher's Stone,1997,50,J.K. Rowling
+Chamber of Secrets ,1998,40,J.K. Rowling
+Prisoner of Azkaban ,1999,45,J.K. Rowling
