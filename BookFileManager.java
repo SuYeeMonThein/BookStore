@@ -10,7 +10,7 @@ public class BookFileManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME))) {
             for (BookStore book : books) {
                 writer.write(
-                        book.getBookname() + "," + book.getYear() + "," + book.getPrice() + "," + book.getAuthor());
+                        book.getid() + "," + book.getBookname() + "," + book.getYear() + "," + book.getPrice() + "," + book.getAuthor());
                 writer.newLine();
             }
             System.out.println("Books have been written to file.");
@@ -25,11 +25,12 @@ public class BookFileManager {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                String bookname = data[0];
-                int year = Integer.parseInt(data[1]);
-                int price = Integer.parseInt(data[2]);
-                String author = data[3];
-                books.add(new BookStore(bookname, year, price, author));
+                int id = Integer.parseInt(data[0]);
+                String bookname = data[1];
+                int year = Integer.parseInt(data[2]);
+                int price = Integer.parseInt(data[3]);
+                String author = data[4];
+                books.add(new BookStore(id, bookname, year, price, author));
             }
             System.out.println("Books have been read from file.");
         } catch (IOException e) {

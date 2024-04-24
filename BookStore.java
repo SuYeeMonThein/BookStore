@@ -4,12 +4,17 @@ public class BookStore {
     private int year;
     private int price;
     private String author;
+    private int id;
 
-    public BookStore(String bookname, int year, int price, String author) {
+    public BookStore(int id,String bookname, int year, int price, String author) {
+        this.id=id;
         this.bookname = bookname;
         this.year = year;
         this.price = price;
         this.author = author;
+    }
+    public int getid() {
+        return id;
     }
 
     public String getBookname() {
@@ -27,7 +32,9 @@ public class BookStore {
     public String getAuthor() {
         return author;
     }
-
+    public void setid(int id) {
+        this.id = id;
+    }
     public void setBookname(String bookname) {
         this.bookname = bookname;
     }
