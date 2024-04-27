@@ -10,7 +10,7 @@ public class BookFileManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME))) {
             for (BookStore book : books) {
                 writer.write(
-                        book.getid() + "," + book.getBookname() + "," + book.getYear() + "," + book.getPrice() + "," + book.getAuthor());
+                        book.getId() + "," + book.getBookName() + "," + book.getYear() + "," + book.getPrice() + "," + book.getAuthor());
                 writer.newLine();
             }
             System.out.println("Books have been written to file.");

@@ -1,46 +1,130 @@
-
-
 import java.util.Scanner;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ShowBookList {
-    private List<BookStore> books;
-    private static final Scanner scanner = new Scanner(System.in);
+interface BookManager {
+    void addNewBook();
+    void deleteBook();
+    void displayBookList();
+    void saveBooksToFile();
+}
 
-    public ShowBookList() throws IOException {
-        books = BookFileManager.readBooksFromFile();
+class BookStore {
+    private int id;
+    private String bookName;
+    private int year;
+    private int price;
+    private String author;
+
+    public BookStore(int id, String bookName, int year, int price, String author) {
+        this.id = id;
+        this.bookName = bookName;
+        this.year = year;
+        this.price = price;
+        this.author = author;
     }
 
-    public void addBook(int id, String bookname, int year, int price, String author) {
-        books.add(new BookStore(id, bookname, year, price, author));
+    public int getId() {
+        return id;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+}
+
+public class ShowBookList implements BookManager {
+    private List<BookStore> books;
+    private Scanner scanner;
+
+    public ShowBookList() {
+        books = new ArrayList<>();
+        scanner = new Scanner(System.in);
+        books = BookFileManager.readBooksFromFile(); // This method should handle file reading
+    }
+
+    @Override
+    public void addNewBook() {
+        int id = getValidatedInt("Enter book ID (positive integer): ", 1, Integer.MAX_VALUE);
+        scanner.nextLine(); // Consume any leftover newline
+        String bookName = getValidatedString("Enter book name: ");
+        int year = getValidatedInt("Enter year of publication (between 1500 and 2025): ", 1500, 2025);
+        int price = getValidatedInt("Enter price (positive integer): ", 1, Integer.MAX_VALUE);
+        scanner.nextLine(); // Consume any leftover newline
+        String author = getValidatedString("Enter author name: ");
+
+        books.add(new BookStore(id, bookName, year, price, author));
         System.out.println("Book added successfully!");
     }
 
-    public void deleteBook() {
-        System.out.print("Enter book ID to delete: ");
-        int id = getIntInput();
-        BookStore toRemove = null;
-        for (BookStore book : books) {
-            if (book.getid() == id) {
-                toRemove = book;
-                break;
+    private int getValidatedInt(String prompt, int min, int max) {
+        while (true) {
+            System.out.print(prompt);
+            if (scanner.hasNextInt()) {
+                int input = scanner.nextInt();
+                if (input >= min && input <= max) {
+                    return input;
+                } else {
+                    System.out.println("Input out of bounds. Please try again.");
+                }
+            } else {
+                scanner.next(); // consume the invalid input
+                System.out.println("Invalid input. Please enter an integer.");
             }
         }
-        if (toRemove != null) {
-            books.remove(toRemove);
-            System.out.println("Book removed successfully!");
+    }
+
+    private String getValidatedString(String prompt) {
+        String input;
+        while (true) {
+            System.out.print(prompt);
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                return input;
+            } else {
+                System.out.println("Invalid input. Please do not leave this blank.");
+            }
+        }
+    }
+
+    @Override
+    public void deleteBook() {
+        int id = getValidatedInt("Enter book ID to delete: ", 1, Integer.MAX_VALUE);
+        scanner.nextLine(); // Consume newline character
+        boolean removed = books.removeIf(book -> book.getId() == id);
+        if (removed) {
+            System.out.println("Book removed successfully.");
         } else {
             System.out.println("No book found with ID: " + id);
         }
     }
 
+    @Override
     public void displayBookList() {
-        System.out.println("Book List:");
-        for (BookStore book : books) {
-            System.out.println(book.getid() + ": " + book.getBookname() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor());
+        if (books.isEmpty()) {
+            System.out.println("No books available.");
+        } else {
+            System.out.println("Book List:");
+            books.forEach(book -> System.out.println(book.getId() + ": " + book.getBookName() + " (" + book.getYear() + ") - $" + book.getPrice() + " by " + book.getAuthor()));
         }
+    }
+
+    @Override
+    public void saveBooksToFile() {
+        BookFileManager.writeBooksToFile(books); // This method should handle file writing
+        System.out.println("Books saved successfully!");
     }
 
     public void showMenu() {
@@ -52,7 +136,7 @@ public class ShowBookList {
         System.out.println("0. Exit");
     }
 
-    public void processSelection(int choice) throws IOException {
+    public void processSelection(int choice) {
         switch (choice) {
             case 1:
                 addNewBook();
@@ -68,58 +152,24 @@ public class ShowBookList {
                 break;
             case 0:
                 System.out.println("Exiting...");
+                System.exit(0);
                 break;
             default:
-                System.out.println("Invalid option!");
+                System.out.println("Invalid option! Please select a valid number from the menu.");
         }
-    }
-
-    public void addNewBook() {
-        System.out.println("Enter book details:");
-        System.out.print("ID: ");
-        int id = getIntInput();
-        System.out.print("Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Year: ");
-        int year = getIntInput();
-        System.out.print("Price: ");
-        int price = getIntInput();
-        System.out.print("Author: ");
-        String author = scanner.nextLine();
-
-        addBook(id, name, year, price, author);
-    }
-
-    public static int getIntInput() {
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input! Please enter an integer.");
-            scanner.next();
-        }
-        int input = scanner.nextInt();
-        scanner.nextLine(); // Consume newline character
-        return input;
-    }
-
-    public void saveBooksToFile() throws IOException {
-        BookFileManager.writeBooksToFile(books);
-        System.out.println("Books saved to file successfully!");
     }
 
     public static void main(String[] args) {
-        try {
-            ShowBookList bookList = new ShowBookList();
-            int choice;
+        ShowBookList bookList = new ShowBookList();
+        int choice;
 
-            do {
-                bookList.showMenu();
-                System.out.print("Enter your choice: ");
-                choice = getIntInput();
-                bookList.processSelection(choice);
-            } while (choice != 0);
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-        } finally {
-            scanner.close();
+        while (true) {
+            bookList.showMenu();
+            System.out.print("Enter your choice: ");
+            choice = bookList.scanner.nextInt();
+            bookList.scanner.nextLine(); // Consume newline character
+
+            bookList.processSelection(choice);
         }
     }
 }
