@@ -196,6 +196,7 @@ public class ShowBookList implements BookManager {
 
             bookList.processSelection(choice);
             System.out.println();
+            System.out.println();
            
         }
     }
