@@ -48,37 +48,47 @@ class BookStore {
 public class ShowBookList implements BookManager {
     private List<BookStore> books;
     private Scanner scanner;
+    private boolean bookAdded = false; // This flag will check if any book has been added
 
     public ShowBookList() {
         books = new ArrayList<>();
         scanner = new Scanner(System.in);
-        books = BookFileManager.readBooksFromFile(); // This method should handle file reading
+        books = BookFileManager.readBooksFromFile(); // Load existing books
     }
 
     @Override
-public void addNewBook() {
-    int id = getValidatedInt("Enter book ID (ID must be at least 1 digits to 9 digits): ", 1, Integer.MAX_VALUE);
-    scanner.nextLine(); // Consume any leftover newline
+    public void addNewBook() {
+        int id = getValidatedInt("Enter book ID (ID must be at least 1 digits to 9 digits): ", 1, Integer.MAX_VALUE);
+        scanner.nextLine(); // Consume any leftover newline
 
-    while (true) {
         System.out.print("Book Name: ");
         String bookName = scanner.nextLine();
-
         if (bookName.matches("[a-zA-Z\\s]+")) {
-            // Valid input, proceed
-            int year = getValidatedInt("Enter year of publication (between 1500 and 2025): ", 1500, 2025);
-            int price = getValidatedInt("Enter price (positive integer): ", 1, Integer.MAX_VALUE);
+            int year = getValidatedInt("Enter year of publication (between 1500 and 2024): ", 1500, 2024);
+            int price = getValidatedInt("Enter price: ", 1, Integer.MAX_VALUE);
             scanner.nextLine(); // Consume any leftover newline
             String author = getValidatedString("Enter author name: ");
 
             books.add(new BookStore(id, bookName, year, price, author));
+            bookAdded = true; // Set the flag to true since a new book has been added
             System.out.println("Book added successfully!");
-            return; // Exit the method after adding the book
         } else {
             System.out.println("Invalid input. Please enter only alphabetic characters for the name.");
         }
     }
-}
+
+    @Override
+    public void saveBooksToFile() {
+        if (!bookAdded) { // Check if any new book has been added before saving
+            System.out.println("No new book added to save. Please add a book first.");
+        } else {
+            BookFileManager.writeBooksToFile(books); // Save the books to the file
+            System.out.println("Books saved successfully!");
+        }
+    }
+
+    // Remaining methods (getValidatedInt, getValidatedString, deleteBook, displayBookList, etc.) remain unchanged.
+
 
     private int getValidatedInt(String prompt, int min, int max) {
         while (true) {
@@ -90,7 +100,7 @@ public void addNewBook() {
                 valInput = valInput.replaceFirst("^0+(?!$)", "");
 
                 int inputfinal = Integer.parseInt(valInput);
-                System.out.println(inputfinal);
+                System.out.println("--->" + inputfinal);
 
                 if (inputfinal >= min && inputfinal <= max ) {
                     return inputfinal;
@@ -99,7 +109,7 @@ public void addNewBook() {
                 }
             } else {
                 scanner.next(); // consume the invalid input
-                System.out.println("Invalid input. Please enter an integer.");
+                System.out.println("Invalid input. Please Try again!.");
             }
         }
     }
@@ -139,19 +149,15 @@ public void addNewBook() {
         }
     }
 
-    @Override
-    public void saveBooksToFile() {
-        BookFileManager.writeBooksToFile(books); // This method should handle file writing
-        System.out.println("Books saved successfully!");
-    }
-
+    
     public void showMenu() {
         System.out.println("Select an option:");
         System.out.println("1. Add new book");
-        System.out.println("2. Show all books");
-        System.out.println("3. Save books to file");
+        System.out.println("2. Save books to file");
+        System.out.println("3. Show all books");
         System.out.println("4. Delete a book");
         System.out.println("0. Exit");
+        System.out.println();
     }
 
     public void processSelection(int choice) {
@@ -160,10 +166,11 @@ public void addNewBook() {
                 addNewBook();
                 break;
             case 2:
-                displayBookList();
+            saveBooksToFile();
                 break;
             case 3:
-                saveBooksToFile();
+                
+                displayBookList();
                 break;
             case 4:
                 deleteBook();
