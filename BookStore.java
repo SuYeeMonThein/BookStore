@@ -13,11 +13,11 @@ public class BookStore {
         this.price = price;
         this.author = author;
     }
-    public int getid() {
+    public int getId() {
         return id;
     }
 
-    public String getBookname() {
+    public String getBookName() {
         return bookname;
     }
 
@@ -32,10 +32,10 @@ public class BookStore {
     public String getAuthor() {
         return author;
     }
-    public void setid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
-    public void setBookname(String bookname) {
+    public void setBookName(String bookname) {
         this.bookname = bookname;
     }
 

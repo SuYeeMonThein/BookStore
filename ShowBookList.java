@@ -56,18 +56,29 @@ public class ShowBookList implements BookManager {
     }
 
     @Override
-    public void addNewBook() {
-        int id = getValidatedInt("Enter book ID (positive integer): ", 1, Integer.MAX_VALUE);
-        scanner.nextLine(); // Consume any leftover newline
-        String bookName = getValidatedString("Enter book name: ");
-        int year = getValidatedInt("Enter year of publication (between 1500 and 2025): ", 1500, 2025);
-        int price = getValidatedInt("Enter price (positive integer): ", 1, Integer.MAX_VALUE);
-        scanner.nextLine(); // Consume any leftover newline
-        String author = getValidatedString("Enter author name: ");
+public void addNewBook() {
+    int id = getValidatedInt("Enter book ID (ID must be at least 1 digits to 9 digits): ", 1, Integer.MAX_VALUE);
+    scanner.nextLine(); // Consume any leftover newline
 
-        books.add(new BookStore(id, bookName, year, price, author));
-        System.out.println("Book added successfully!");
+    while (true) {
+        System.out.print("Book Name: ");
+        String bookName = scanner.nextLine();
+
+        if (bookName.matches("[a-zA-Z\\s]+")) {
+            // Valid input, proceed
+            int year = getValidatedInt("Enter year of publication (between 1500 and 2025): ", 1500, 2025);
+            int price = getValidatedInt("Enter price (positive integer): ", 1, Integer.MAX_VALUE);
+            scanner.nextLine(); // Consume any leftover newline
+            String author = getValidatedString("Enter author name: ");
+
+            books.add(new BookStore(id, bookName, year, price, author));
+            System.out.println("Book added successfully!");
+            return; // Exit the method after adding the book
+        } else {
+            System.out.println("Invalid input. Please enter only alphabetic characters for the name.");
+        }
     }
+}
 
     private int getValidatedInt(String prompt, int min, int max) {
         while (true) {
@@ -170,6 +181,7 @@ public class ShowBookList implements BookManager {
             bookList.scanner.nextLine(); // Consume newline character
 
             bookList.processSelection(choice);
+            System.out.println();
         }
     }
 }
