@@ -71,7 +71,7 @@ public class ShowBookList implements BookManager {
 
             books.add(new BookStore(id, bookName, year, price, author));
             bookAdded = true; // Set the flag to true since a new book has been added
-            System.out.println("Book added successfully!");
+            System.out.println("please clip number 2 to save your book in file!");
         } else {
             System.out.println("Invalid input. Please enter only alphabetic characters for the name.");
         }
