@@ -48,7 +48,7 @@ class BookStore {
 public class ShowBookList implements BookManager {
     private List<BookStore> books;
     private Scanner scanner;
-    private boolean bookAdded = false; // This flag will check if any book has been added
+    private boolean bookAdded = false; // Track if a new book has been added
 
     public ShowBookList() {
         books = new ArrayList<>();
@@ -56,10 +56,24 @@ public class ShowBookList implements BookManager {
         books = BookFileManager.readBooksFromFile(); // Load existing books
     }
 
+    private boolean isIdUnique(int id) {
+        for (BookStore book : books) {
+            if (book.getId() == id) {
+                return false; // ID is not unique
+            }
+        }
+        return true; // ID is unique
+    }
+
     @Override
     public void addNewBook() {
         int id = getValidatedInt("Enter book ID (ID must be at least 1 digits to 9 digits): ", 1, Integer.MAX_VALUE);
         scanner.nextLine(); // Consume any leftover newline
+
+        if (!isIdUnique(id)) {
+            System.out.println("A book with this ID already exists. Please use a different ID.");
+            return; // Exit the method if the ID is not unique
+        }
 
         System.out.print("Book Name: ");
         String bookName = scanner.nextLine();
@@ -71,7 +85,7 @@ public class ShowBookList implements BookManager {
 
             books.add(new BookStore(id, bookName, year, price, author));
             bookAdded = true; // Set the flag to true since a new book has been added
-            System.out.println("please clip number 2 to save your book in file!");
+            System.out.println("Book added successfully!");
         } else {
             System.out.println("Invalid input. Please enter only alphabetic characters for the name.");
         }
@@ -79,17 +93,15 @@ public class ShowBookList implements BookManager {
 
     @Override
     public void saveBooksToFile() {
-        if (!bookAdded) { // Check if any new book has been added before saving
+        if (!bookAdded) {
             System.out.println("No new book added to save. Please add a book first.");
         } else {
             BookFileManager.writeBooksToFile(books); // Save the books to the file
             System.out.println("Books saved successfully!");
+            bookAdded = false; // Reset flag after saving
         }
     }
-
-    // Remaining methods (getValidatedInt, getValidatedString, deleteBook, displayBookList, etc.) remain unchanged.
-
-
+  
     private int getValidatedInt(String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);
