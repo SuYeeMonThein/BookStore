@@ -85,8 +85,15 @@ public void addNewBook() {
             System.out.print(prompt);
             if (scanner.hasNextInt()) {
                 int input = scanner.nextInt();
-                if (input >= min && input <= max) {
-                    return input;
+                String valInput = String.valueOf(input);
+                
+                valInput = valInput.replaceFirst("^0+(?!$)", "");
+
+                int inputfinal = Integer.parseInt(valInput);
+                System.out.println(inputfinal);
+
+                if (inputfinal >= min && inputfinal <= max ) {
+                    return inputfinal;
                 } else {
                     System.out.println("Input out of bounds. Please try again.");
                 }
